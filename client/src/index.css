@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.btn {
+  @apply bg-black text-white px-4 py-2 rounded-lg transition duration-300;
+}
+
+.btn:hover {
+  @apply bg-gray-800 scale-105;
+}

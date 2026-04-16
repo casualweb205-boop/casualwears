@@ -18,7 +18,7 @@ function Home() {
 
   // FETCH
   const fetchProducts = () => {
-    fetch("http://localhost:5000/api/products")
+    fetch("https://casualwears.onrender.com/api/products")
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);
@@ -57,7 +57,7 @@ function Home() {
 
   // DELETE
   const handleDelete = async (id) => {
-    await fetch(`http://localhost:5000/api/products/${id}`, {
+    await fetch(`https://casualwears.onrender.com/api/products/${id}`, {
       method: "DELETE",
     });
 

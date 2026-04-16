@@ -56,8 +56,8 @@ function Seller() {
 
   const handleSubmit = async () => {
     const url = editingProduct
-      ? `http://localhost:5000/api/products/${editingProduct._id}`
-      : "http://localhost:5000/api/products/add";
+      ? `https://casualwears.onrender.com/api/products/${editingProduct._id}`
+      : "https://casualwears.onrender.com/api/products/add";
 
     const method = editingProduct ? "PUT" : "POST";
 

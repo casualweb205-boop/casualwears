@@ -8,7 +8,7 @@ function Orders() {
     const userId = localStorage.getItem("userId");
 
     fetch(
-      `http://localhost:5000/api/orders?userId=${userId}&role=${role}`
+      `https://casualwears.onrender.com/api/orders?userId=${userId}&role=${role}`
     )
       .then((res) => res.json())
       .then((data) => setOrders(data));
@@ -25,7 +25,7 @@ function Orders() {
 
     const userId = localStorage.getItem("userId");
 
-    await fetch("http://localhost:5000/api/orders/review", {
+    await fetch("https://casualwears.onrender.com/api/orders/review", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ function Orders() {
 
     // reload
     const res = await fetch(
-      `http://localhost:5000/api/orders?userId=${userId}&role=${role}`
+      `https://casualwears.onrender.com/api/orders?userId=${userId}&role=${role}`
     );
     const data = await res.json();
     setOrders(data);

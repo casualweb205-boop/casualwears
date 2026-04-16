@@ -41,7 +41,7 @@ function Checkout() {
 
     const userId = localStorage.getItem("userId");
 
-    const res = await fetch("http://localhost:5000/api/orders/create", {
+    const res = await fetch("https://casualwears.onrender.com/api/orders/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

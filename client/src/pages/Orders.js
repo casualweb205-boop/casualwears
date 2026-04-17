@@ -46,7 +46,6 @@ function Orders() {
 
       {orders.map((order) => (
         <div key={order._id} className="bg-white p-4 mb-4 rounded shadow">
-
           <p>Status: {order.status || "Pending"}</p>
 
           {role === "seller" && (

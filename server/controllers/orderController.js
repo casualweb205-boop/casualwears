@@ -1,3 +1,4 @@
+
 const Order = require("../models/Order");
 
 // CREATE
@@ -5,7 +6,7 @@ exports.createOrder = async (req, res) => {
   try {
     const order = new Order({
       ...req.body,
-      status: "Pending",
+      status: "Pending", 
     });
 
     await order.save();
@@ -25,10 +26,8 @@ exports.getOrders = async (req, res) => {
 
     if (role === "seller") {
       orders = await Order.find();
-    } else if (userId) {
-      orders = await Order.find({ userId });
     } else {
-      orders = await Order.find();
+      orders = await Order.find({ userId });
     }
 
     res.json(orders);
@@ -40,39 +39,30 @@ exports.getOrders = async (req, res) => {
 // STATUS
 exports.updateOrderStatus = async (req, res) => {
   try {
-    const updated = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
-      { new: true }
-    );
-
-    res.json(updated);
+    await Order.findByIdAndUpdate(req.params.id, {
+      status: req.body.status,
+    });
+    res.json({ message: "Status updated" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// ADD REVIEW
+// 🔥 ADD REVIEW WITH VALIDATION
 exports.addReview = async (req, res) => {
   try {
     const { orderId, itemIndex, review, rating, userId } = req.body;
 
     const order = await Order.findById(orderId);
 
-    if (!order) {
-      return res.status(404).json({ message: "Order not found" });
-    }
-
+    // ❌ Not owner
     if (order.userId !== userId) {
       return res.status(403).json({ message: "Not allowed" });
     }
 
     const item = order.items[itemIndex];
 
-    if (!item) {
-      return res.status(404).json({ message: "Item not found" });
-    }
-
+    // ❌ Already reviewed
     if (item.review) {
       return res.json({ message: "Already reviewed" });
     }

@@ -5,7 +5,7 @@ exports.createOrder = async (req, res) => {
   try {
     const order = new Order({
       ...req.body,
-      status: "Pending", // ✅ ADD THIS LINE
+      status: "Pending", 
     });
 
     await order.save();

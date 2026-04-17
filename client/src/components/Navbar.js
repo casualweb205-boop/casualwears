@@ -12,13 +12,12 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-black text-white p-4 flex items-center justify-between relative">
+    <nav className="bg-black text-white px-4 py-3 flex flex-col md:flex-row items-center justify-between">
 
-      {/* LEFT */}
-      <div className="space-x-4">
+      {/* TOP ROW (MOBILE) / LEFT (DESKTOP) */}
+      <div className="flex flex-wrap justify-center md:justify-start gap-3 text-sm md:text-base">
         <Link to="/" className="hover:text-gray-300">Home</Link>
 
-        {/* 🔥 HIDE CART FOR SELLER */}
         {role !== "seller" && (
           <Link to="/cart" className="hover:text-gray-300">
             Cart 🛒
@@ -36,13 +35,13 @@ function Navbar() {
         )}
       </div>
 
-      {/* CENTER */}
-<div className="absolute left-1/2 transform -translate-x-1/2">
-  <ParticleText />
-</div>
+      {/* CENTER LOGO */}
+      <div className="my-2 md:my-0">
+        <ParticleText />
+      </div>
 
       {/* RIGHT */}
-      <div className="space-x-4">
+      <div className="flex gap-3 text-sm md:text-base">
         {token ? (
           <button onClick={handleLogout} className="btn">
             Logout
@@ -58,6 +57,7 @@ function Navbar() {
           </>
         )}
       </div>
+
     </nav>
   );
 }

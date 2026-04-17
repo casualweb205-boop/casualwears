@@ -22,6 +22,7 @@ function Orders() {
 
       const res = await fetch(url);
       const data = await res.json();
+      console.log("ORDERS:", data);
 
       setOrders(Array.isArray(data) ? data : []);
     } catch (err) {

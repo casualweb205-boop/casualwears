@@ -3,7 +3,11 @@ const Order = require("../models/Order");
 // CREATE
 exports.createOrder = async (req, res) => {
   try {
-    const order = new Order(req.body);
+    const order = new Order({
+      ...req.body,
+      status: "Pending", // ✅ ADD THIS LINE
+    });
+
     await order.save();
     res.json({ message: "Order placed successfully" });
   } catch (err) {

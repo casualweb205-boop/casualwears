@@ -8,9 +8,9 @@ const {
   addReview,
 } = require("../controllers/orderController");
 
-router.post("/create", createOrder);
+router.post("/", createOrder);        // ✅ FIXED
 router.get("/", getOrders);
 router.put("/:id/status", updateOrderStatus);
-router.post("/review", addReview); // 🔥 NEW
+router.post("/review", addReview);
 
 module.exports = router;

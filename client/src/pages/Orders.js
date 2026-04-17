@@ -1,148 +1,160 @@
 import { useEffect, useState } from "react";
 
 function Orders() {
-const [orders, setOrders] = useState([]);
-const role = localStorage.getItem("role");
+  const [orders, setOrders] = useState([]);
+  const role = localStorage.getItem("role");
 
-useEffect(() => {
-loadOrders();
-}, [role]);
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
-const loadOrders = async () => {
-const userId = localStorage.getItem("userId");
+  const loadOrders = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
 
-```
-const res = await fetch(
-  `https://casualwears.onrender.com/api/orders?userId=${userId}&role=${role}`
-);
-const data = await res.json();
-setOrders(data);
-```
+      let url = "https://casualwears.onrender.com/api/orders";
 
-};
+      if (role === "seller") {
+        url += "?role=seller";
+      } else {
+        url += `?userId=${userId}`;
+      }
 
-const updateStatus = async (id, status) => {
-await fetch(`https://casualwears.onrender.com/api/orders/${id}/status`, {
-method: "PUT",
-headers: {
-"Content-Type": "application/json",
-},
-body: JSON.stringify({ status }),
-});
+      const res = await fetch(url);
+      const data = await res.json();
 
-```
-alert("Status updated");
-loadOrders();
-```
+      setOrders(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error(err);
+      setOrders([]);
+    }
+  };
 
-};
+  const updateStatus = async (id, status) => {
+    await fetch(
+      `https://casualwears.onrender.com/api/orders/${id}/status`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      }
+    );
 
-const addReview = async (orderId, index) => {
-const review = prompt("Write your review:");
-const rating = parseInt(prompt("Rate (1-5):"));
+    alert("Status updated");
+    loadOrders();
+  };
 
-```
-if (!review || !rating || rating < 1 || rating > 5) {
-  alert("Invalid input");
-  return;
-}
+  const addReview = async (orderId, index) => {
+    const review = prompt("Write your review:");
+    const rating = parseInt(prompt("Rate (1-5):"));
 
-const userId = localStorage.getItem("userId");
+    if (!review || !rating || rating < 1 || rating > 5) {
+      alert("Invalid input");
+      return;
+    }
 
-await fetch("https://casualwears.onrender.com/api/orders/review", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    orderId,
-    itemIndex: index,
-    review,
-    rating,
-    userId,
-  }),
-});
+    const userId = localStorage.getItem("userId");
 
-loadOrders();
-```
+    await fetch("https://casualwears.onrender.com/api/orders/review", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId,
+        itemIndex: index,
+        review,
+        rating,
+        userId,
+      }),
+    });
 
-};
+    loadOrders();
+  };
 
-return ( <div className="p-6 bg-gray-100 min-h-screen"> <h1 className="text-2xl font-bold mb-4">Orders 📦</h1>
+  return (
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Orders 📦</h1>
 
-```
-  {orders.map((order, i) => (
-    <div key={i} className="bg-white p-4 mb-4 rounded shadow">
-
-      {/* STATUS */}
-      <p className="font-semibold mb-2">
-        Status:{" "}
-        <span
-          className={
-            order.status === "Delivered"
-              ? "text-green-600"
-              : order.status === "Shipped"
-              ? "text-yellow-600"
-              : "text-red-600"
-          }
-        >
-          {order.status}
-        </span>
-      </p>
-
-      {/* SELLER CONTROL */}
-      {role === "seller" && (
-        <select
-          value={order.status}
-          onChange={(e) => updateStatus(order._id, e.target.value)}
-          className="border p-1 mb-3"
-        >
-          <option>Pending</option>
-          <option>Shipped</option>
-          <option>Delivered</option>
-        </select>
+      {orders.length === 0 && (
+        <p className="text-gray-500">No orders found</p>
       )}
 
-      {/* ITEMS */}
-      {order.items.map((item, index) => (
-        <div key={index} className="mb-3 border-b pb-2 flex gap-4">
+      {orders.map((order) => (
+        <div key={order._id} className="bg-white p-4 mb-4 rounded shadow">
 
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-16 h-16"
-          />
+          <p className="font-semibold mb-2">
+            Status:{" "}
+            <span
+              className={
+                order.status === "Delivered"
+                  ? "text-green-600"
+                  : order.status === "Shipped"
+                  ? "text-yellow-600"
+                  : "text-red-600"
+              }
+            >
+              {order.status}
+            </span>
+          </p>
 
-          <div>
-            <p>{item.name}</p>
+          {role === "seller" && (
+            <select
+              value={order.status}
+              onChange={(e) =>
+                updateStatus(order._id, e.target.value)
+              }
+              className="border p-1 mb-3"
+            >
+              <option value="Pending">Pending</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+            </select>
+          )}
 
-            {/* REVIEW BUTTON */}
-            {role !== "seller" && !item.review && (
-              <button
-                onClick={() => addReview(order._id, index)}
-                className="btn mt-2"
-              >
-                Add Review
-              </button>
-            )}
+          {order.items.map((item, index) => (
+            <div key={index} className="mb-3 border-b pb-2 flex gap-4">
 
-            {/* SHOW REVIEW */}
-            {item.review && (
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-16 h-16"
+              />
+
               <div>
-                <p>⭐ {item.rating}/5</p>
-                <p>{item.review}</p>
-              </div>
-            )}
-          </div>
+                <p>{item.name}</p>
 
+                {role !== "seller" && (
+                  <p className="text-sm text-gray-600">
+                    Tracking: {order.status}
+                  </p>
+                )}
+
+                {role !== "seller" && !item.review && (
+                  <button
+                    onClick={() => addReview(order._id, index)}
+                    className="btn mt-2"
+                  >
+                    Add Review
+                  </button>
+                )}
+
+                {item.review && (
+                  <div>
+                    <p>⭐ {item.rating}/5</p>
+                    <p>{item.review}</p>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          ))}
         </div>
       ))}
     </div>
-  ))}
-</div>
-```
-
-);
+  );
 }
 
 export default Orders;
